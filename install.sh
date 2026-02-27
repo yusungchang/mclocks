@@ -51,7 +51,7 @@ if ! python3 -c "import pytz" &>/dev/null; then
 fi
 
 # RPi 2 requires X11
-MODEL=$(cat /proc/device-tree/model 2>/dev/null || echo "")
+MODEL=$(tr -d '\0' < /proc/device-tree/model 2>/dev/null || echo "")
 if echo "$MODEL" | grep -q "Raspberry Pi 2"; then
     if ! command -v startx &>/dev/null; then
         echo "RPi 2 detected — installing X11 (required for display)..."
