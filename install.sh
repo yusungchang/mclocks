@@ -41,21 +41,21 @@ if ! command -v python3 &>/dev/null; then
 fi
 
 if ! python3 -c "import pygame" &>/dev/null; then
-    echo "pygame not found — installing..."
-    apt-get install -y python3-pygame
+    echo "Error: pygame not found. Please run: sudo apt install python3-pygame" >&2
+    exit 1
 fi
 
 if ! python3 -c "import pytz" &>/dev/null; then
-    echo "pytz not found — installing..."
-    apt-get install -y python3-tz
+    echo "Error: pytz not found. Please run: sudo apt install python3-tz" >&2
+    exit 1
 fi
 
 # RPi 2 requires X11
 MODEL=$(tr -d '\0' < /proc/device-tree/model 2>/dev/null || echo "")
 if echo "$MODEL" | grep -q "Raspberry Pi 2"; then
     if ! command -v startx &>/dev/null; then
-        echo "RPi 2 detected — installing X11 (required for display)..."
-        apt-get install -y xserver-xorg xinit x11-xserver-utils
+        echo "Error: X11 not found. Please run: sudo apt install xserver-xorg xinit x11-xserver-utils" >&2
+        exit 1
     fi
 fi
 

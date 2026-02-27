@@ -9,7 +9,7 @@ SCRIPT="$LIB_DIR/mclocks.py"
 # Only set SDL_VIDEODRIVER if not already set by the user
 if [ -z "$SDL_VIDEODRIVER" ]; then
     if [ "$(uname)" = "Linux" ]; then
-        MODEL=$(cat /proc/device-tree/model 2>/dev/null || echo "")
+        MODEL=$(tr -d '\0' < /proc/device-tree/model 2>/dev/null || echo "")
 
         if echo "$MODEL" | grep -q "Raspberry Pi 2"; then
             # RPi 2 has no EGL/KMS support — requires X11
