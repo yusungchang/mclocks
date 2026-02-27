@@ -1,0 +1,52 @@
+# ==============================================================================
+#  Release Workflow
+#  To release a new version, tag a commit and push:
+#
+#    git tag v1.0.0
+#    git push origin v1.0.0
+#
+#  This workflow will automatically:
+#    1. Stamp the version into mclocks and mclocks.py
+#    2. Create a GitHub Release
+#    3. Attach mclocks, mclocks.py, and all fonts as release assets
+# ==============================================================================
+
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Stamp version into scripts
+        run: |
+          sed "s/@@VERSION@@/${{ github.ref_name }}/" mclocks > /tmp/mclocks
+          chmod +x /tmp/mclocks
+          sed "s/@@VERSION@@/${{ github.ref_name }}/" mclocks.py > /tmp/mclocks.py
+          chmod +x /tmp/mclocks.py
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: ${{ github.ref_name }}
+          tag_name: ${{ github.ref_name }}
+          files: |
+            /tmp/mclocks
+            /tmp/mclocks.py
+            fonts/JetBrainsMono-Regular.ttf
+            fonts/JetBrainsMono-Bold.ttf
+            fonts/JetBrainsMono-ExtraBold.ttf
+            fonts/Inter-Regular.ttf
+            fonts/Inter-Bold.ttf
+            fonts/Inter-ExtraBold.ttf
+          generate_release_notes: true

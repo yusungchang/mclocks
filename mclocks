@@ -1,0 +1,25 @@
+#!/bin/bash
+# mclocks @@VERSION@@
+# A pygame-based multi-timezone world clock for Raspberry Pi displays
+
+LIB_DIR="/usr/local/lib/mclocks"
+SCRIPT="$LIB_DIR/mclocks.py"
+
+# --- DISPLAY DRIVER DETECTION ---
+# Only set SDL_VIDEODRIVER if not already set by the user
+if [ -z "$SDL_VIDEODRIVER" ]; then
+    if [ "$(uname)" = "Linux" ]; then
+        MODEL=$(cat /proc/device-tree/model 2>/dev/null || echo "")
+
+        if echo "$MODEL" | grep -q "Raspberry Pi 2"; then
+            # RPi 2 has no EGL/KMS support — requires X11
+            export SDL_VIDEODRIVER=x11
+        else
+            # RPi 3 / 4 / 5 and other Linux — use KMS/DRM for console rendering
+            export SDL_VIDEODRIVER=kmsdrm
+        fi
+    fi
+    # macOS: don't set SDL_VIDEODRIVER — pygame uses native Quartz driver
+fi
+
+exec python3 "$SCRIPT" "$@"
