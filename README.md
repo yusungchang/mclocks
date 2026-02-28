@@ -55,7 +55,7 @@ mclocks [MODE] [THEME] [OPTIONS]
 | Argument | Values | Default |
 |----------|--------|---------|
 | `MODE` | `1` (single), `2` (top/bottom), `4` (2×2 grid) | `4` |
-| `THEME` | `vibrant`, `warm`, `fjord` | `vibrant` |
+| `THEME` | `vibrant`, `warm`, `fjord`, `cold` | `vibrant` |
 
 ```bash
 mclocks          # 2×2 layout, vibrant theme
@@ -76,13 +76,13 @@ mclocks 1 fjord  # single clock, fjord theme
 
 ## Examples
 
-| Single (`mclocks 1`) | 2-pane (`mclocks 2`) | 4-pane (`mclocks 4`) |
-|----------------------|----------------------|----------------------|
-| ![mode 1](assets/mclocks-1-24h.png) | ![mode 2](assets/mclocks-2-24h.png) | ![mode 2](assets/mclocks-4-24h.png) |
+| Single (`mclocks 1`) | 2-pane (`mclocks 2`) | 
+|----------------------|----------------------|
+| ![mode 1](assets/mclocks-1-24h.png) | ![mode 2](assets/mclocks-2-24h.png) |
 
-| Vibrant (`mclocks vivrant`) | Warm (`mclocks warm`) | Fjord (`mclocks fjord`) |
-|----------------------|----------------------|----------------------|
-| ![vibrant](assets/mclocks-4-12h.png) | ![warm](assets/mclocks-4-warm-12h.png) | ![fjord](assets/mclocks-4-fjord-12h.png) |
+| Warm (`mclocks warm`) | Fjord (`mclocks fjord`) |
+|----------------------|----------------------|
+| ![warm](assets/mclocks-4-warm-12h.png) | ![fjord](assets/mclocks-4-fjord-12h.png) |
 
 | 12-hour (`mclocks --12h`) | 24-hour (`mclocks --24h`) |
 |----------------------|----------------------|
