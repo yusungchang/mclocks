@@ -96,8 +96,9 @@ def get_local_timezone():
     except Exception:
         pass
     try:
-        tz_str = datetime.datetime.now(datetime.timezone.utc).astimezone().tzname()
-        return tz_str
+        link = os.readlink('/etc/localtime')
+        if 'zoneinfo/' in link:
+            return link.split('zoneinfo/')[-1]
     except Exception:
         pass
     return "UTC"
@@ -262,18 +263,15 @@ class MClockPane:
         self.dim_text = theme["dim_text"]
 
         # Optimized font sizes
-        day_sz = int(4.5 * scale)   # Slightly smaller than Location
-        name_sz = int(5.5 * scale)
-        info_sz = int(4 * scale)
+        day_sz = int(4.5 * scale)
+        info_sz = int(7 * scale)
 
         try:
             self.day_font = pygame.font.Font(font_path("JetBrainsMono-ExtraBold.ttf"), day_sz)
-            self.name_font = pygame.font.Font(font_path("JetBrainsMono-Bold.ttf"), name_sz)
-            self.info_font = pygame.font.Font(font_path("JetBrainsMono-Regular.ttf"), info_sz)
+            self.info_font = pygame.font.Font(font_path("JetBrainsMono-Bold.ttf"), info_sz)
         except:
             self.day_font = pygame.font.SysFont("sans-serif", day_sz, bold=True)
-            self.name_font = pygame.font.SysFont("sans-serif", name_sz, bold=True)
-            self.info_font = pygame.font.SysFont("sans-serif", info_sz)
+            self.info_font = pygame.font.SysFont("sans-serif", info_sz, bold=True)
 
     def draw(self, surface):
         now = datetime.datetime.now(self.tz)
@@ -286,12 +284,15 @@ class MClockPane:
         total_clock_w = (len(time_str) * 5 + (len(time_str)-1)) * self.spacing
         total_clock_h = 7 * self.spacing
 
-        # 1. Calculate Positions
-        # Increase gap1 to 10 * scale for more space between Days and Clock
-        group_h = total_clock_h + (35 * self.scale)
+        # 1. Calculate Positions — use actual font metrics for true vertical centering
+        total_h = (self.day_font.get_height() +
+                   int(12 * self.scale) +
+                   int(total_clock_h) +
+                   int(7 * self.scale) +
+                   self.info_font.get_height())
 
         start_x = self.rect.centerx - (total_clock_w // 2)
-        start_y = self.rect.centery - (group_h // 2)
+        start_y = self.rect.centery - total_h // 2
 
         # 2. DRAW BOLD DAY-TRACK
         # Perfectly aligned with total clock width
@@ -320,15 +321,17 @@ class MClockPane:
                     pygame.gfxdraw.filled_circle(surface, px, py, self.radius, color)
             cursor_x += 6 * self.spacing
 
-        # 4. DRAW LOCATION NAME (Bold)
-        name_lbl = self.name_font.render(self.name, True, active_color)
-        name_y = clock_y + total_clock_h + (7 * self.scale)
-        surface.blit(name_lbl, (self.rect.centerx - (name_lbl.get_width() // 2), int(name_y)))
-
-        # 5. DRAW DATE
-        info_lbl = self.info_font.render(date_str, True, (180, 180, 180))
-        info_y = name_y + name_lbl.get_height() + (1.5 * self.scale)
-        surface.blit(info_lbl, (self.rect.centerx - (info_lbl.get_width() // 2), int(info_y)))
+        # 4. DRAW LOCATION  ·  DATE (combined line)
+        dim_color = tuple(int(c * 0.75) for c in active_color)
+        name_surf = self.info_font.render(self.name, True, active_color)
+        div_surf  = self.info_font.render("  ·  ", True, dim_color)
+        date_surf = self.info_font.render(date_str, True, dim_color)
+        combined_w = name_surf.get_width() + div_surf.get_width() + date_surf.get_width()
+        info_x = self.rect.centerx - combined_w // 2
+        info_y = int(clock_y + total_clock_h + (7 * self.scale))
+        surface.blit(name_surf, (info_x, info_y))
+        surface.blit(div_surf,  (info_x + name_surf.get_width(), info_y))
+        surface.blit(date_surf, (info_x + name_surf.get_width() + div_surf.get_width(), info_y))
 
 def main():
     num_display = 4
