@@ -9,7 +9,10 @@
 - 🕐 LED dot-matrix clock rendered with pygame — no desktop required
 - 🌍 2-pane (top/bottom) or 2×2 layout
 - 🎨 Circadian color — each clock shifts color by its own local time of day
+- 🎭 Themes — `vibrant` (default) and `warm`, switchable at runtime
 - 📅 Day-of-week tracker and date display per pane
+- 🌐 Local timezone auto-detection for the home pane
+- ⚙️ Config file for timezones and default theme
 - 🖥️ Designed for always-on Raspberry Pi displays (800×480)
 - 🔠 JetBrains Mono font — bundled, no system font needed
 
@@ -38,43 +41,67 @@ You can inspect [`install.sh`](install.sh) before running.
 Installs:
 - `/usr/local/bin/mclocks` — launcher
 - `/usr/local/lib/mclocks/mclocks.py` — main script
-- `/usr/local/lib/mclocks/fonts/` — JetBrains Mono
+- `/usr/local/lib/mclocks/mclocks.conf` — configuration
+- `/usr/local/lib/mclocks/fonts/` — JetBrains Mono, Inter
 
 ---
 
 ## Usage
 
 ```
-mclocks [MODE]
+mclocks [MODE] [THEME]
 ```
 
-| Mode | Layout | Panes |
-|------|--------|-------|
-| `2` | Top / bottom | 2 clocks |
-| `4` (default) | 2×2 grid | 4 clocks |
+| Argument | Values | Default |
+|----------|--------|---------|
+| `MODE` | `2` (top/bottom), `4` (2×2 grid) | `4` |
+| `THEME` | `vibrant`, `warm` | `vibrant` |
 
 ```bash
-mclocks      # 2×2 layout (default)
-mclocks 4    # 2×2 layout (explicit)
-mclocks 2    # top/bottom layout
+mclocks          # 2×2 layout, vibrant theme
+mclocks 2        # top/bottom layout, vibrant theme
+mclocks 4 warm   # 2×2 layout, warm theme
+mclocks 2 warm   # top/bottom layout, warm theme
 ```
 
 ---
 
-## Timezones
+## Configuration
 
-| Pane | City | Timezone |
-|------|------|----------|
-| 1 | Seoul | Asia/Seoul |
-| 2 | Singapore | Asia/Singapore |
-| 3 | San Francisco | America/Los_Angeles |
-| 4 | New York | America/New_York |
+Edit `/usr/local/lib/mclocks/mclocks.conf` to set your timezones and default theme:
 
-To change cities, edit `ALL_LOCATIONS` in `mclocks.py`.
+```ini
+[settings]
+default_theme = vibrant
+
+[locations]
+location1 = LOCAL, local
+location2 = SAN FRANCISCO, America/Los_Angeles
+location3 = SINGAPORE, Asia/Singapore
+location4 = NEW YORK, America/New_York
+```
+
+Use `local` as the timezone value to auto-detect from the system. See the [tz database](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) for timezone strings.
+
+Display order:
+
+| Mode | Position |
+|------|----------|
+| `mclocks 2` | 1=top, 2=bottom |
+| `mclocks 4` | 1=top-left, 2=bottom-left, 3=top-right, 4=bottom-right |
 
 ---
 
-## Circadian Colors
+## Themes
+
+| Theme | Description |
+|-------|-------------|
+| `vibrant` | Full circadian spectrum — dark red night through cyan midday to white peak |
+| `warm` | Amber and red tones throughout the day |
+
+---
+
+## Circadian Colors (vibrant)
 
 Each pane colors itself by its own local time of day.
 

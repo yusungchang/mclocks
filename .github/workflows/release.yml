@@ -43,6 +43,7 @@ jobs:
           files: |
             /tmp/mclocks
             /tmp/mclocks.py
+            mclocks.conf
             fonts/JetBrainsMono-Regular.ttf
             fonts/JetBrainsMono-Bold.ttf
             fonts/JetBrainsMono-ExtraBold.ttf

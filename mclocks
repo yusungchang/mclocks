@@ -1,6 +1,11 @@
 #!/bin/bash
 # mclocks @@VERSION@@
 # A pygame-based multi-timezone world clock for Raspberry Pi displays
+#
+# Usage: mclocks [2|4] [theme]
+#   mclocks 2           # 2-pane, default theme
+#   mclocks 4 warm      # 2x2 grid, warm theme
+#   mclocks 2 vibrant   # 2-pane, vibrant theme
 
 LIB_DIR="/usr/local/lib/mclocks"
 SCRIPT="$LIB_DIR/mclocks.py"

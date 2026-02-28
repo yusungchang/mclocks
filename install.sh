@@ -10,7 +10,8 @@
 #  Installs:
 #    - /usr/local/bin/mclocks          (shell wrapper / launcher)
 #    - /usr/local/lib/mclocks/mclocks.py
-#    - /usr/local/lib/mclocks/fonts/   (JetBrains Mono)
+#    - /usr/local/lib/mclocks/mclocks.conf
+#    - /usr/local/lib/mclocks/fonts/   (JetBrains Mono, Inter)
 # ==============================================================================
 
 set -euo pipefail
@@ -83,6 +84,19 @@ fi
 chmod +x "$LIB_DIR/mclocks.py"
 echo "  Installed script    → $LIB_DIR/mclocks.py"
 
+# --- DOWNLOAD CONFIG (only if not already present) ---
+CONFIG="$LIB_DIR/mclocks.conf"
+if [ ! -f "$CONFIG" ]; then
+    echo "Downloading mclocks.conf..."
+    if ! curl -fsSL "$BASE_URL/mclocks.conf" -o "$CONFIG"; then
+        echo "Warning: Failed to download mclocks.conf — using defaults" >&2
+    else
+        echo "  Installed config    → $CONFIG"
+    fi
+else
+    echo "  Skipping config     → $CONFIG (already exists, not overwritten)"
+fi
+
 # --- DOWNLOAD FONTS ---
 echo "Downloading fonts..."
 
@@ -106,10 +120,8 @@ echo ""
 
 # --- RPi 2 POST-INSTALL NOTE ---
 if echo "$MODEL" | grep -q "Raspberry Pi 2"; then
-    echo "RPi 2 detected — additional setup required."
-    echo ""
-    echo "  Configure ~/.xinitrc to launch mclocks on startx."
-    echo "  See SETUP.md for instructions:"
+    echo "RPi 2 detected. X11 is handled automatically by the mclocks launcher."
+    echo "See SETUP.md for auto-start instructions:"
     echo "  https://github.com/$REPO/blob/main/SETUP.md"
     echo ""
 fi
