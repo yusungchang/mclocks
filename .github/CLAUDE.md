@@ -102,7 +102,7 @@ Themes are defined as dicts in `mclocks.py` under `THEMES`. Each theme controls:
 - `dim_dot`: inactive LED dot color
 - `dim_text`: inactive day-of-week text color
 
-Current themes: `vibrant` (default), `warm`.
+Current themes: `vibrant` (default), `warm`, `fjord`.
 
 Theme selection priority: CLI arg > `mclocks.conf` `default_theme` > hardcoded default (`vibrant`).
 
@@ -115,12 +115,13 @@ Theme selection priority: CLI arg > `mclocks.conf` `default_theme` > hardcoded d
 ## Usage
 
 ```bash
-mclocks [2|4] [theme]
+mclocks [1|2|4] [theme]
 
 mclocks          # 2×2, vibrant
+mclocks 1        # single clock, full screen
 mclocks 2        # top/bottom, vibrant
 mclocks 4 warm   # 2×2, warm theme
-mclocks 2 warm   # top/bottom, warm theme
+mclocks 1 fjord  # single clock, fjord theme
 ```
 
 ---

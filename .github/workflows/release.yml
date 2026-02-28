@@ -47,7 +47,4 @@ jobs:
             fonts/JetBrainsMono-Regular.ttf
             fonts/JetBrainsMono-Bold.ttf
             fonts/JetBrainsMono-ExtraBold.ttf
-            fonts/Inter-Regular.ttf
-            fonts/Inter-Bold.ttf
-            fonts/Inter-ExtraBold.ttf
           generate_release_notes: true

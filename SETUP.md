@@ -71,10 +71,10 @@ sudo systemctl daemon-reload
 
 ### Auto-start on Boot (Optional)
 
-Once CLI mode and auto-login are configured, add the following to `~/.bash_profile` to launch mclocks automatically on login:
+Once CLI mode and auto-login are configured, add the following to `~/.profile` to launch mclocks automatically on login:
 
 ```bash
-cat >> ~/.bash_profile << 'EOF'
+cat >> ~/.profile << 'EOF'
 
 # Auto-start mclocks on tty1
 if [ "$(tty)" = "/dev/tty1" ]; then
@@ -83,7 +83,7 @@ fi
 EOF
 ```
 
-> To use the 2×2 four-clock layout instead, change `mclocks 2` to `mclocks 4`.
+> Other layout options: `mclocks 1` (single clock), `mclocks 4` (2×2 grid). A theme can be appended to any mode: `mclocks 2 fjord`. Option `--12h` can be used for 12-hour format. 
 
 ---
 
@@ -142,12 +142,13 @@ deactivate
 
 ## Themes
 
-mclocks ships with two built-in themes, selectable at runtime or via config:
+mclocks ships with three built-in themes, selectable at runtime or via config:
 
 | Theme | Style |
 |-------|-------|
 | `vibrant` | Full circadian spectrum — cool blues and whites by day, warm reds by night |
 | `warm` | Amber and red tones throughout — easier on the eyes in dark environments |
+| `fjord` | Nordic panorama palette — warm amber at dawn/dusk, cool blue-white at midday peak |
 
 Set a default in `mclocks.conf`:
 
@@ -159,6 +160,7 @@ default_theme = warm
 Or override at runtime:
 
 ```bash
+mclocks 1 fjord
 mclocks 2 warm
 mclocks 4 vibrant
 ```
@@ -167,6 +169,6 @@ mclocks 4 vibrant
 
 ## Fonts
 
-mclocks uses **JetBrains Mono** and **Inter**, both under the SIL Open Font License. The fonts are bundled in the repository under `fonts/` and installed automatically by `install.sh` to `/usr/local/lib/mclocks/fonts/`.
+mclocks uses **JetBrains Mono** under the SIL Open Font License. The fonts are bundled in the repository under `fonts/` and installed automatically by `install.sh` to `/usr/local/lib/mclocks/fonts/`.
 
-If running manually without installing, ensure the `fonts/` folder is in the same directory as `mclocks.py`. If fonts are missing, the app will fall back to a system sans-serif font.
+If running manually without installing, ensure the `fonts/` folder is in the same directory as `mclocks.py`. The app will not work without the fonts.
