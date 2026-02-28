@@ -64,6 +64,24 @@ THEMES = {
             (22, (80,  20,  5)),    # Night
         ]
     },
+    "fjord": {
+        "background": (3, 4, 8),
+        "dim_dot":    (18, 20, 28),
+        "dim_text":   (48, 52, 68),
+        "circadian": [
+            (0,  (145, 65,  15)),   # Dawn
+            (4,  (235, 125, 20)),   # Sunrise
+            (6,  (250, 200, 80)),   # Morning
+            (8,  (215, 200, 170)),  # Late morning
+            (11, (180, 210, 245)),  # Noon
+            (13, (240, 245, 255)),  # Peak
+            (15, (180, 210, 245)),  # Afternoon
+            (17, (215, 200, 170)),  # Late afternoon
+            (19, (250, 200, 80)),   # Golden hour
+            (21, (235, 125, 20)),   # Sunset
+            (22, (145, 65,  15)),   # Dusk
+        ]
+    },
 }
 
 DEFAULT_THEME = "vibrant"
@@ -317,12 +335,12 @@ def main():
     scale = 2.5
     theme_name = None  # resolved after loading config
 
-    # Parse args: mclocks [2|4] [theme]
+    # Parse args: mclocks [1|2|4] [theme]
     args = sys.argv[1:]
     for arg in args:
-        if arg in ("2", "4"):
+        if arg in ("1", "2", "4"):
             num_display = int(arg)
-            scale = 4.0 if num_display == 2 else 2.5
+            scale = {1: 6.0, 2: 4.0, 4: 2.5}[num_display]
         elif arg in THEMES:
             theme_name = arg
 
@@ -350,9 +368,12 @@ def main():
             col = i // 2
             row = i % 2
             x, y = col * w, row * h
-        else:
+        elif num_display == 2:
             w, h = WIDTH, HEIGHT // 2
             x, y = 0, i * h
+        else:  # 1
+            w, h = WIDTH, HEIGHT
+            x, y = 0, 0
         panes.append(MClockPane(name, tz, (x, y, w, h), scale, theme))
 
     while True:
@@ -364,10 +385,11 @@ def main():
         for pane in panes:
             pane.draw(screen)
 
-        div_c = (40, 40, 40)
-        pygame.draw.line(screen, div_c, (0, HEIGHT//2), (WIDTH, HEIGHT//2), 1)
-        if num_display == 4:
-            pygame.draw.line(screen, div_c, (WIDTH//2, 0), (WIDTH//2, HEIGHT), 1)
+        if num_display > 1:
+            div_c = (40, 40, 40)
+            pygame.draw.line(screen, div_c, (0, HEIGHT//2), (WIDTH, HEIGHT//2), 1)
+            if num_display == 4:
+                pygame.draw.line(screen, div_c, (WIDTH//2, 0), (WIDTH//2, HEIGHT), 1)
 
         pygame.display.flip()
         clock.tick(FPS)
