@@ -39,40 +39,6 @@ The `mclocks` launcher script detects your hardware and sets the correct driver 
 
 ---
 
-### RPi 2 — Additional Setup (x11)
-
-RPi 2 cannot use KMS/DRM due to hardware limitations. A minimal X server is required.
-
-**Install X:**
-
-```bash
-sudo apt install xserver-xorg xinit x11-xserver-utils
-```
-
-**Configure `~/.xinitrc`:**
-
-```bash
-cat > ~/.xinitrc << 'EOF'
-#!/bin/bash
-# Disable screen blanking
-xset s off
-xset s noblank
-xset -dpms
-
-# Launch mclocks
-mclocks 2
-EOF
-chmod +x ~/.xinitrc
-```
-
-**Run manually:**
-
-```bash
-startx
-```
-
----
-
 ### Auto-start on Boot (Optional)
 
 To launch mclocks automatically when the Pi boots and logs in on tty1, add the following to `~/.bash_profile`:

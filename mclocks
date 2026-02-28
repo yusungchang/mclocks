@@ -5,21 +5,50 @@
 LIB_DIR="/usr/local/lib/mclocks"
 SCRIPT="$LIB_DIR/mclocks.py"
 
-# --- DISPLAY DRIVER DETECTION ---
-# Only set SDL_VIDEODRIVER if not already set by the user
-if [ -z "$SDL_VIDEODRIVER" ]; then
-    if [ "$(uname)" = "Linux" ]; then
-        MODEL=$(tr -d '\0' < /proc/device-tree/model 2>/dev/null || echo "")
+# --- PLATFORM DETECTION ---
+OS="$(uname)"
+MODEL=$(tr -d '\0' < /proc/device-tree/model 2>/dev/null || echo "")
 
-        if echo "$MODEL" | grep -q "Raspberry Pi 2"; then
-            # RPi 2 has no EGL/KMS support — requires X11
-            export SDL_VIDEODRIVER=x11
-        else
-            # RPi 3 / 4 / 5 and other Linux — use KMS/DRM for console rendering
-            export SDL_VIDEODRIVER=kmsdrm
-        fi
+if [ "$OS" = "Darwin" ]; then
+    # macOS — pygame uses Quartz natively, no SDL driver needed
+    exec python3 "$SCRIPT" "$@"
+
+elif [ "$OS" = "Linux" ]; then
+
+    if echo "$MODEL" | grep -q "Raspberry Pi 2"; then
+        # RPi 2 — no EGL/KMS support, must use X11 via startx
+        # Build a temporary xinitrc that disables blanking and launches mclocks
+        XINITRC=$(mktemp /tmp/mclocks-xinitrc.XXXXXX)
+        trap "rm -f $XINITRC" EXIT
+
+        cat > "$XINITRC" << XINITRC_EOF
+#!/bin/bash
+xset s off
+xset s noblank
+xset -dpms
+SDL_VIDEODRIVER=x11 python3 $SCRIPT $@
+XINITRC_EOF
+        chmod +x "$XINITRC"
+        exec startx "$XINITRC" -- :0 -nocursor
+
+    elif echo "$MODEL" | grep -q "Raspberry Pi"; then
+        # RPi 3 / 4 / 5 — KMS/DRM direct console rendering
+        setterm -blank 0 -powerdown 0 -powersave off 2>/dev/null || true
+        export SDL_VIDEODRIVER=kmsdrm
+        exec python3 "$SCRIPT" "$@"
+
+    elif [ -n "$DISPLAY" ] || [ -n "$WAYLAND_DISPLAY" ]; then
+        # Linux desktop — already in a display session
+        exec python3 "$SCRIPT" "$@"
+
+    else
+        # Linux console, unknown hardware — try kmsdrm as best guess
+        setterm -blank 0 -powerdown 0 -powersave off 2>/dev/null || true
+        export SDL_VIDEODRIVER=kmsdrm
+        exec python3 "$SCRIPT" "$@"
     fi
-    # macOS: don't set SDL_VIDEODRIVER — pygame uses native Quartz driver
-fi
 
-exec python3 "$SCRIPT" "$@"
+else
+    # Unknown platform — let pygame figure it out
+    exec python3 "$SCRIPT" "$@"
+fi
