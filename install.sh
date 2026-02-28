@@ -104,9 +104,6 @@ FONTS=(
     "JetBrainsMono-Regular.ttf"
     "JetBrainsMono-Bold.ttf"
     "JetBrainsMono-ExtraBold.ttf"
-    "Inter-Regular.ttf"
-    "Inter-Bold.ttf"
-    "Inter-ExtraBold.ttf"
 )
 for font in "${FONTS[@]}"; do
     if ! curl -fsSL "$BASE_URL/$font" -o "$FONT_DIR/$font"; then
