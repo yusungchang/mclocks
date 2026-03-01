@@ -8,10 +8,11 @@
 #    curl -fsSL https://raw.githubusercontent.com/yusungchang/mclocks/main/install.sh | bash
 #
 #  Installs:
-#    - /usr/local/bin/mclocks          (shell wrapper / launcher)
+#    - /usr/local/bin/mclocks                   (shell wrapper / launcher)
 #    - /usr/local/lib/mclocks/mclocks.py
+#    - /usr/local/lib/mclocks/mclocks_splash.txt
 #    - /usr/local/lib/mclocks/mclocks.conf
-#    - /usr/local/lib/mclocks/fonts/   (JetBrains Mono, Inter)
+#    - /usr/local/lib/mclocks/fonts/            (JetBrains Mono, Inter)
 # ==============================================================================
 
 set -euo pipefail
@@ -83,6 +84,14 @@ if ! curl -fsSL "$BASE_URL/mclocks.py" -o "$LIB_DIR/mclocks.py"; then
 fi
 chmod +x "$LIB_DIR/mclocks.py"
 echo "  Installed script    → $LIB_DIR/mclocks.py"
+
+# --- DOWNLOAD SPLASH ---
+echo "Downloading mclocks_splash.txt..."
+if ! curl -fsSL "$BASE_URL/mclocks_splash.txt" -o "$LIB_DIR/mclocks_splash.txt"; then
+    echo "Warning: Failed to download mclocks_splash.txt — splash screen will be skipped" >&2
+else
+    echo "  Installed splash    → $LIB_DIR/mclocks_splash.txt"
+fi
 
 # --- DOWNLOAD CONFIG (only if not already present) ---
 CONFIG="$LIB_DIR/mclocks.conf"

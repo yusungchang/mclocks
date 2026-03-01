@@ -7,12 +7,23 @@
 #   mclocks 4 warm      # 2x2 grid, warm theme
 #   mclocks 2 vibrant   # 2-pane, vibrant theme
 
+# Hide cursor
+tput civis
+
+# Ensure cursor is restored on exit
+trap "tput cnorm; clear; exit" SIGINT SIGTERM EXIT
+
 LIB_DIR="/usr/local/lib/mclocks"
 SCRIPT="$LIB_DIR/mclocks.py"
+SPLASH="$LIB_DIR/mclocks_splash.txt"
 
 # --- PLATFORM DETECTION ---
 OS="$(uname)"
 MODEL=$(tr -d '\0' < /proc/device-tree/model 2>/dev/null || echo "")
+
+if [ -f "$SPLASH" ]; then
+    cat "$SPLASH" > /dev/tty1
+fi
 
 if [ "$OS" = "Darwin" ]; then
     # macOS — pygame uses Quartz natively, no SDL driver needed
@@ -23,18 +34,21 @@ elif [ "$OS" = "Linux" ]; then
     if echo "$MODEL" | grep -q "Raspberry Pi 2"; then
         # RPi 2 — no EGL/KMS support, must use X11 via startx
         # Build a temporary xinitrc that disables blanking and launches mclocks
+
         XINITRC=$(mktemp /tmp/mclocks-xinitrc.XXXXXX)
         trap "rm -f $XINITRC" EXIT
 
         cat > "$XINITRC" << XINITRC_EOF
 #!/bin/bash
+export SDL_VIDEODRIVER=x11
+export NO_AT_BRIDGE=1
 xset s off
 xset s noblank
 xset -dpms
-SDL_VIDEODRIVER=x11 python3 $SCRIPT $@
+exec nice -n -10 python3 $SCRIPT $@
 XINITRC_EOF
         chmod +x "$XINITRC"
-        exec startx "$XINITRC" -- :0 -nocursor
+        exec startx "$XINITRC" -- :0 -ac -nocursor -quiet -nolisten tcp > /dev/null 2>&1
 
     elif echo "$MODEL" | grep -q "Raspberry Pi"; then
         # RPi 3 / 4 / 5 — KMS/DRM direct console rendering
@@ -57,3 +71,6 @@ else
     # Unknown platform — let pygame figure it out
     exec python3 "$SCRIPT" "$@"
 fi
+
+tput cnorm
+clear

@@ -1,0 +1,62 @@
+#!/bin/bash
+# youtube - Play YouTube URL or search by keyword automatically
+
+# ===== Default mpv options =====
+MPV_OPTS="${MPV_OPTS:--ytdl-format="bestvideo[height<=480]+bestaudio/best[height<=480]" --volume=50 --framedrop=vo}"
+
+# ===== Predefined Favorites =====
+FAVORITES=(
+    "YTN Live"
+    "YonhapnewsTV Live"
+    "NBC Live"
+    "ABC Live"
+    "Bloomberg Business News Live"
+    "PBS NewsHour full episode"
+)
+
+# ===== Menu Display =====
+clear
+echo "==========================="
+echo "  YouTube Play Quick Menu"
+echo "==========================="
+for i in "${!FAVORITES[@]}"; do
+    INDEX=$((i+1))
+    echo "$INDEX) ${FAVORITES[$i]}"
+done
+echo "N) New URL or Keyword"
+echo "Q) Quit"
+echo "==========================="
+
+read -p "Choose an option: " CHOICE
+
+# ===== Handle Menu Choice =====
+if [[ "$CHOICE" =~ ^[Qq]$ ]]; then
+    clear
+    echo "Goodbye!"
+    exit 0
+elif [[ "$CHOICE" =~ ^[Nn]$ ]]; then
+    read -p "Enter URL or keyword: " INPUT
+elif [[ "$CHOICE" =~ ^[0-9]+$ ]] && ((CHOICE>=1 && CHOICE<=${#FAVORITES[@]})); then
+    INPUT="${FAVORITES[$((CHOICE-1))]}"
+else
+    echo "Invalid choice. Exiting."
+    exit 1
+fi
+
+
+# ===== Determine if URL or Keyword =====
+if [[ "$INPUT" =~ ^https?:// ]]; then
+    URL="$INPUT"
+else
+    echo "Searching YouTube for: $INPUT"
+    VIDEO_ID=$(yt-dlp "ytsearch1:$INPUT" --get-id 2>/dev/null)
+    if [ -z "$VIDEO_ID" ]; then
+        echo "No video found for '$INPUT'. Exiting."
+        exit 1
+    fi
+    URL="https://www.youtube.com/watch?v=$VIDEO_ID"
+fi
+
+# ===== Play video =====
+echo "Playing: $URL"
+mpv $MPV_OPTS "$URL"

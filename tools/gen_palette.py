@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # Generate assets/palette.png — circadian color palette for all themes.
-# Run from the repo root: python3 gen_palette.py
+# Run from the repo root: python3 tools/gen_palette.py
 
 from PIL import Image, ImageDraw, ImageFont
 import os
@@ -87,7 +87,7 @@ TICK_H = 24
 PAD = 20
 THEME_GAP = 12
 
-FONT_PATH = os.path.join(os.path.dirname(__file__), "fonts", "Inter-Bold.ttf")
+FONT_PATH = os.path.join(os.path.dirname(__file__), "../fonts", "Inter-Bold.ttf")
 
 total_w = PAD + LABEL_W + HOURS * CELL_W + PAD
 n_themes = len(THEMES)
@@ -125,6 +125,6 @@ for h in [0, 6, 12, 18, 24]:
     label = f"{h:02d}"
     draw.text((x, tick_y), label, font=font_tick, fill=(140, 140, 140), anchor="lt")
 
-out_path = os.path.join(os.path.dirname(__file__), "assets", "palette.png")
+out_path = os.path.join(os.path.dirname(__file__), "../assets", "palette.png")
 img.save(out_path)
 print(f"Saved {out_path}")

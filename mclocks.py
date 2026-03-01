@@ -18,13 +18,14 @@
 #
 # ==============================================================================
 
+import sys
+import os
+os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 
 import pygame
 import pygame.gfxdraw
 import datetime
 import pytz
-import sys
-import os
 import configparser
 import pathlib
 

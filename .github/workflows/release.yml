@@ -8,7 +8,7 @@
 #  This workflow will automatically:
 #    1. Stamp the version into mclocks and mclocks.py
 #    2. Create a GitHub Release
-#    3. Attach mclocks, mclocks.py, and all fonts as release assets
+#    3. Attach mclocks, mclocks.py, mclocks_splash.txt, and all fonts as release assets
 # ==============================================================================
 
 name: Release
@@ -43,6 +43,7 @@ jobs:
           files: |
             /tmp/mclocks
             /tmp/mclocks.py
+            mclocks_splash.txt
             mclocks.conf
             fonts/JetBrainsMono-Regular.ttf
             fonts/JetBrainsMono-Bold.ttf
