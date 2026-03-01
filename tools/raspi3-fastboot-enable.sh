@@ -88,8 +88,7 @@ hdmi_force_hotplug=1
 hdmi_group=2
 hdmi_mode=87
 hdmi_cvt=$WIDTH $HEIGHT $REFRESH 6 0 0 0
-# AUDIO ENABLED
-hdmi_drive=2
+hdmi_drive=1
 EOF
 
 echo "--- 4. Kernel & Terminal Silence (cmdline.txt) ---"

@@ -24,47 +24,10 @@ sudo apt update
 sudo apt install python3-pygame python3-tz
 ```
 
-RPi 2 additionally requires a minimal X server:
+RPi 2/3 additionally requires a minimal package for EGL/KMS support.
 
 ```bash
-sudo apt install xserver-xorg xinit x11-xserver-utils
-```
-
----
-
-### Display Driver
-
-mclocks needs to know how to reach the display. This depends on your hardware:
-
-| Model | Driver | Notes |
-|-------|--------|-------|
-| RPi 2 | `x11` | No EGL/KMS support; X server started internally by launcher |
-| RPi 3 / 4 / 5 | `kmsdrm` | Direct console rendering, no X needed |
-
-The `mclocks` launcher detects your hardware and handles everything automatically.
-
----
-
-### CLI Mode + Auto-login (Optional)
-
-For an always-on display, configure the Pi to boot to CLI and log in automatically.
-
-**Set CLI boot mode:**
-
-```bash
-sudo systemctl set-default multi-user.target
-```
-
-**Enable auto-login on tty1:**
-
-```bash
-sudo mkdir -p /etc/systemd/system/getty@tty1.service.d
-sudo tee /etc/systemd/system/getty@tty1.service.d/autologin.conf > /dev/null << EOF
-[Service]
-ExecStart=
-ExecStart=-/sbin/agetty --autologin $USER --noclear %I \$TERM
-EOF
-sudo systemctl daemon-reload
+sudo apt install mesa-utils
 ```
 
 ---

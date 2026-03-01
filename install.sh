@@ -52,13 +52,9 @@ if ! python3 -c "import pytz" &>/dev/null; then
     exit 1
 fi
 
-# RPi 2 requires X11
-MODEL=$(tr -d '\0' < /proc/device-tree/model 2>/dev/null || echo "")
-if echo "$MODEL" | grep -q "Raspberry Pi 2"; then
-    if ! command -v startx &>/dev/null; then
-        echo "Error: X11 not found. Please run: sudo apt install xserver-xorg xinit x11-xserver-utils" >&2
-        exit 1
-    fi
+if ! command -v eglinfo &>/dev/null; then
+    echo "Error: mesa-utils not found (eglinfo missing) — EGL/KMS display may not work." >&2
+    echo "         To install: sudo apt install mesa-utils" >&2
 fi
 
 echo ""
