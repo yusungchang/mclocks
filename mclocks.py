@@ -499,10 +499,11 @@ def main():
         theme_name = config_theme if config_theme in THEMES else DEFAULT_THEME
     theme = THEMES[theme_name]
 
-    pygame.init()
+    pygame.display.init()
+    pygame.font.init()
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
-    pygame.display.set_caption("mclocks")
     pygame.mouse.set_visible(False)
+    pygame.display.set_caption("mclocks")
     clock = pygame.time.Clock()
 
     active_locations = all_locations[:num_display]

@@ -27,37 +27,33 @@ fi
 
 if [ "$OS" = "Darwin" ]; then
     # macOS — pygame uses Quartz natively, no SDL driver needed
-    exec python3 "$SCRIPT" "$@"
+    python3 "$SCRIPT" "$@"
 
 elif [ "$OS" = "Linux" ]; then
 
     if echo "$MODEL" | grep -q "Raspberry Pi 2"; then
         setterm -blank 0 -powerdown 0 -powersave off 2>/dev/null || true
         export SDL_VIDEODRIVER=kmsdrm
-        exec python3 "$SCRIPT" "$@"
-        
+        python3 "$SCRIPT" "$@"
 
     elif echo "$MODEL" | grep -q "Raspberry Pi"; then
         # RPi 3 / 4 / 5 — KMS/DRM direct console rendering
         setterm -blank 0 -powerdown 0 -powersave off 2>/dev/null || true
         export SDL_VIDEODRIVER=kmsdrm
-        exec python3 "$SCRIPT" "$@"
+        python3 "$SCRIPT" "$@"
 
     elif [ -n "$DISPLAY" ] || [ -n "$WAYLAND_DISPLAY" ]; then
         # Linux desktop — already in a display session
-        exec python3 "$SCRIPT" "$@"
+        python3 "$SCRIPT" "$@"
 
     else
         # Linux console, unknown hardware — try kmsdrm as best guess
         setterm -blank 0 -powerdown 0 -powersave off 2>/dev/null || true
         export SDL_VIDEODRIVER=kmsdrm
-        exec python3 "$SCRIPT" "$@"
+        python3 "$SCRIPT" "$@"
     fi
 
 else
     # Unknown platform — let pygame figure it out
-    exec python3 "$SCRIPT" "$@"
+    python3 "$SCRIPT" "$@"
 fi
-
-tput cnorm
-clear
