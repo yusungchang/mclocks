@@ -1,0 +1,14 @@
+# Location: /etc/systemd/system/splashscreen.service
+[Unit]
+Description=Splash Screen
+DefaultDependencies=no
+After=local-fs.target
+
+[Service]
+ExecStart=/usr/bin/fbi -d /dev/fb0 --noverbose -T 1 /pi-splash.png
+RemainAfterExit=yes
+StandardInput=tty
+StandardOutput=tty
+
+[Install]
+WantedBy=sysinit.target

@@ -1,0 +1,63 @@
+#!/bin/bash
+# ==============================================================================
+#  YouTube News (yt-new) - YouTube News Channel Player
+#  Copyright (c) 2026 Yu-Sung Chang
+#
+#  Dependencies: 
+#      - mpv       sudo apt install mpv
+#      - yt-dlp    https://github.com/yt-dlp/yt-dlp/wiki/Installation (newest)
+# ==============================================================================
+
+MPV_OPTS="${MPV_OPTS:--ytdl-format="bestvideo[height<=480]+bestaudio/best[height<=480]" --volume=50 --framedrop=vo}"
+
+while true; do
+
+INPUT=$(whiptail \
+    --title "Live News Launcher" \
+    --menu "Choose channel" \
+    20 70 10 \
+    "YTN Live"                     "" \
+    "YonhapnewsTV Live"            "" \
+    "NBC Live"                     "" \
+    "ABC Live"                     "" \
+    "Bloomberg Business News Live" "" \
+    "PBS NewsHour full episode"    "" \
+    "Manual Search"                "" \
+    "Quit"                         "" \
+    3>&1 1>&2 2>&3)
+
+# Cancel pressed
+[ $? -ne 0 ] && exit 0
+
+# Quit option
+[ "$INPUT" = "Quit" ] && exit 0
+
+# ----------------------------
+# Manual keyword input
+# ----------------------------
+if [ "$INPUT" = "Manual Search" ]; then
+    INPUT=$(whiptail \
+        --inputbox "Enter YouTube search keyword:" \
+        10 60 \
+        3>&1 1>&2 2>&3)
+
+    # cancelled input
+    [ $? -ne 0 ] && continue
+fi
+
+clear
+echo "Searching YouTube for: $INPUT"
+
+VIDEO_ID=$(yt-dlp "ytsearch1:$INPUT live" --get-id 2>/dev/null)
+
+if [ -z "$VIDEO_ID" ]; then
+    whiptail --msgbox "No video found for:\n$INPUT" 10 60
+    continue
+fi
+
+URL="https://www.youtube.com/watch?v=$VIDEO_ID"
+
+echo "Playing: $URL"
+
+mpv $MPV_OPTS "$URL"
+done

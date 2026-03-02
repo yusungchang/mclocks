@@ -89,7 +89,7 @@ EOF
 
 echo "--- 4. Kernel & Terminal Silence (cmdline.txt) ---"
 # Force frame buffer to match defined resolution (MAY REQUIRE MODIFICATION))
-sed -i "s/console=tty1/console=tty1 quiet loglevel=3 vt.global_cursor_default=0 logo.nologo fastboot video=HDMI-A-1:${WIDTH}x${HEIGHT}@${REFRESH}D/g" /boot/firmware/cmdline.txt
+sed -i "s/console=tty1/console=tty3 quiet loglevel=3 vt.global_cursor_default=0 logo.nologo fastboot video=HDMI-A-1:${WIDTH}x${HEIGHT}@${REFRESH}D/g" /boot/firmware/cmdline.txt
 
 # Emptying the banners
 truncate -s 0 /etc/issue /etc/issue.net /etc/motd
