@@ -1,4 +1,21 @@
-# Location: /etc/systemd/system/splashscreen.service
+# =================================================================
+#  splashscreen.service
+#  Splash screen service for Raspberry Pi
+#
+#  !!! WARNING !!! WARNING !!! WARNING !!! WARNING
+#  This script is designed ONLY for Raspberry Pi 2/3 running
+#  Debian 12 (Bookworm).
+#
+#  Dependencies: 
+#      - fbi       sudo apt install fbi
+#
+#  Installation:   /etc/systemd/system/
+#
+#  Configuration:  sudo systemctl daemon-reload
+#                  sudo systemctl enable splashscreen.service
+#
+#  Copyright (c) 2026 Yu-Sung Chang | MIT License
+# =================================================================
 [Unit]
 Description=Splash Screen
 DefaultDependencies=no

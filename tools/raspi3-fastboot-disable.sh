@@ -1,18 +1,21 @@
 #!/bin/bash
 # =================================================================
-# raspi3-fastboot-disable.sh
-# Revert Fastboot tweaks and restore original system state.
+#  raspi3-fastboot-disable.sh
+#  Revert Fastboot tweaks and restore original system state.
 #
-# !!! WARNING !!! WARNING !!! WARNING !!! WARNING
-# This script is designed ONLY for Raspberry Pi 3 running
-# Debian 12 (Bookworm). Using this on other models or
-# distributions may destroy the booting sequence or result 
-# in hardware misconfiguration.
+#  !!! WARNING !!! WARNING !!! WARNING !!! WARNING
+#  This script is designed ONLY for Raspberry Pi 3 running
+#  Debian 12 (Bookworm).
 #
-# Proceed with caution.
+#  This script modifies Raspberry Pi boot configuration.
+#  Proceed with caution. Incorrect use may alter the boot
+#  sequence and could render the system unbootable or cause
+#  hardware misconfiguration.
 #
-# Installation: /usr/local/sbin
-# Copyright (c) 2026 Yu-Sung Chang | MIT License
+#  Review and understand the script before running it.
+#
+#  Installation: /usr/local/sbin
+#  Copyright (c) 2026 Yu-Sung Chang | MIT License
 # =================================================================
 
 # --- USER CONFIGURATION ---
