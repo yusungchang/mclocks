@@ -8,22 +8,27 @@
 #      - yt-dlp    https://github.com/yt-dlp/yt-dlp/wiki/Installation (newest)
 # ==============================================================================
 
-MPV_OPTS="${MPV_OPTS:--ytdl-format="bestvideo[height<=480]+bestaudio/best[height<=480]" --volume=50 --framedrop=vo}"
+MPV_OPTS="${MPV_OPTS:--ytdl-format="bestvideo[height<=480]+bestaudio/best[height<=480]" --volume=20 --framedrop=vo}"
+EST_DATE=$(TZ='America/New_York' date +'%B %-d, %Y')
 
 while true; do
 
 INPUT=$(whiptail \
     --title "Live News Launcher" \
     --menu "Choose channel" \
-    20 70 10 \
-    "YTN Live"                     "" \
-    "YonhapnewsTV Live"            "" \
-    "NBC Live"                     "" \
-    "ABC Live"                     "" \
-    "Bloomberg Business News Live" "" \
-    "PBS NewsHour full episode"    "" \
-    "Manual Search"                "" \
-    "Quit"                         "" \
+    22 75 13 \
+    "YTN Live"                               "KR" \
+    "YonhapnewsTV Live"                      "KR" \
+    "KBS 24"                                 "KR" \
+    "MBC News 24/7"                          "KR" \
+    "ABC News Live"                          "US" \
+    "CBS News 24/7"                          "US" \
+    "NBC News Now"                           "US" \
+    "LiveNOW from FOX"                       "US" \
+    "Bloomberg Business News Live"           "US" \
+    "PBS NewsHour $EST_DATE"                 "US" \
+    "Manual Search"                          "" \
+    "Quit"                                   "" \
     3>&1 1>&2 2>&3)
 
 # Cancel pressed

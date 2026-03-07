@@ -1,30 +1,30 @@
 #!/bin/bash
-# ==============================================================================
-#  App Launcer
-#  Copyright (c) 2026 Yu-Sung Chang
-# ==============================================================================
 
 while true; do
 
 CHOICE=$(whiptail \
     --title "Application Launcher" \
     --menu "Select application" \
-    15 50 5 \
-    youtube "YouTube New Channel Player" \
-    mclocks "Multi-timezone World Clock" \
-    quit "Exit launcher" \
+    15 50 6 \
+    yt-news "    YouTube New Channel Player" \
+    mclocks "    Multi-timezone World Clock" \
+    Reboot  "    Reboot the System" \
+    Quit    "    Exit Launcher" \
     3>&1 1>&2 2>&3)
 
 clear
 
 case "$CHOICE" in
-    youtube)
-        /usr/local/bin/youtube
+    yt-news)
+        /usr/local/bin/yt-news
         ;;
     mclocks)
         /usr/local/bin/mclocks
         ;;
-    quit)
+    Reboot)
+        sudo reboot now
+        ;;
+    Quit)
         exit 0
         ;;
 esac
