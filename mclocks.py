@@ -200,9 +200,10 @@ def load_config():
         else:
             resolved.append((name, tz))
 
-    # Default theme from config
+    # Default theme/mode from config
     default_theme = DEFAULT_THEME
     time_format = 24
+    default_mode = 4
     if config.has_section('settings'):
         if config.has_option('settings', 'default_theme'):
             default_theme = config.get('settings', 'default_theme').strip()
@@ -210,8 +211,12 @@ def load_config():
             val = config.get('settings', 'time_format').strip()
             if val in ('12', '24'):
                 time_format = int(val)
+        if config.has_option('settings', 'default_mode'):
+            val = config.get('settings', 'default_mode').strip()
+            if val in ('1', '2', '4'):
+                default_mode = int(val)
 
-    return resolved, default_theme, time_format
+    return resolved, default_theme, time_format, default_mode
 
 DIGITS = {
     '1': ["  #  ",
@@ -461,7 +466,6 @@ def usage():
 
 
 def main():
-    num_display = 4
     theme_name = None  # resolved after loading config
 
     # Parse args: mclocks [1|2|4] [theme] [--screenshot] [-v] [-h]
@@ -476,10 +480,11 @@ def main():
         sys.exit(0)
 
     screenshot = '--screenshot' in args
+    cli_mode = None
     time_format = None
     for arg in args:
         if arg in ("1", "2", "4"):
-            num_display = int(arg)
+            cli_mode = int(arg)
         elif arg in THEMES:
             theme_name = arg
         elif arg == '--12h':
@@ -487,12 +492,14 @@ def main():
         elif arg == '--24h':
             time_format = 24
 
-    scale = SCALE_FACTORS[num_display]
-
     # Load config
-    all_locations, config_theme, config_time_format = load_config()
+    all_locations, config_theme, config_time_format, config_mode = load_config()
     if time_format is None:
         time_format = config_time_format
+
+    # Mode priority: CLI arg > config default
+    num_display = cli_mode if cli_mode is not None else config_mode
+    scale = SCALE_FACTORS[num_display]
 
     # Theme priority: CLI arg > config default > built-in default
     if theme_name is None:
@@ -526,7 +533,7 @@ def main():
 
     while True:
         for event in pygame.event.get():
-            if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
+            if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key in (pygame.K_ESCAPE, pygame.K_q)):
                 pygame.quit(); sys.exit()
 
         screen.fill(theme["background"])
